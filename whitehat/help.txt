@@ -1,2 +1,3 @@
 Userful Command Examples
 sudo nmap -sP 172.16.28.78/24 #local scan
+explainshell.com *Breakdown of commands
