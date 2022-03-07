@@ -2,21 +2,24 @@
 
 import subprocess
 import optparse
-
-def capture_input():
-    #If no options given use input
-    interface = input(" interface > ") 
-    new_mac = input(" New MAC address > ")
-    return interface, new_mac
+import re
 
 def get_args():
     
     parser = optparse.OptionParser()
     parser.add_option("-i","--interface", dest="interface", help="Interface to change its MAC address")
     parser.add_option("-m","--mac", dest="new_mac", help="New MAC address")
-    return parser.parse_args()
-
-
+    (options, arguments) = parser.parse_args()
+    
+    if not options.interface and not options.new_mac:
+        options.interface = input(" interface > ") 
+        options.new_mac = input(" New MAC address > ")   
+    elif not options.interface:
+        parser.error("[-] No interface entered")
+    elif not options.new_mac:
+        parser.error("[-] No MAC entered")
+    return options
+     
 def change_mac(interface, new_mac):
     print("[+] Changing Mac Address for: " + interface + " to " + new_mac)
 
@@ -24,7 +27,14 @@ def change_mac(interface, new_mac):
     subprocess.call(["ifconfig", interface, "hw", "ether", new_mac])
     subprocess.call(["ifconfig", interface, "up"])
 
-(options,arguments) = get_args() 
-(interface, new_mac) = capture_input()
+(options) = get_args() 
 
-change_mac(options.interface or interface, options.new_mac or new_mac)
+# change_mac(options.interface, options.new_mac)
+ifconfig_result = subprocess.check_output(["ifconfig", options.interface])
+mac_address_regex = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w", ifconfig_result.decode('utf-8'))
+
+if mac_address_regex:
+
+    print('Mac address changed to: ' + mac_address_regex.group(0))
+else:
+    print("[-] Could not read MAC address")
