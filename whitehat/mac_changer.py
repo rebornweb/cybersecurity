@@ -1,25 +1,23 @@
 #!/usr/bin/env python
 
 import subprocess
-import optparse
 import re
+import argparse
 
-def get_args():
-    
-    parser = optparse.OptionParser()
-    parser.add_option("-i","--interface", dest="interface", help="Interface to change its MAC address")
-    parser.add_option("-m","--mac", dest="new_mac", help="New MAC address")
-    (options, arguments) = parser.parse_args()
-    
-    if not options.interface and not options.new_mac:
-        options.interface = input(" interface > ") 
-        options.new_mac = input(" New MAC address > ")   
-    elif not options.interface:
+def get_argy():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i","--interface", dest="interface", help="Interface to change its MAC address")
+    parser.add_argument("-m","--mac", dest="new_mac", help="New MAC address")
+    args = parser.parse_args()
+    if not args.interface and not args.new_mac:
+        args.interface = input(" interface > ") 
+        args.new_mac = input(" New MAC address > ")   
+    elif not args.interface:
         parser.error("[-] No interface entered")
-    elif not options.new_mac:
+    elif not args.new_mac:
         parser.error("[-] No MAC entered")
-    return options
-     
+    return args
+
 def change_mac(interface, new_mac):
     print("[+] Changing Mac Address for: " + interface + " to " + new_mac)
 
@@ -32,12 +30,20 @@ def get_current_mac(interface):
     mac_address_regex = re.search(r"\w\w:\w\w:\w\w:\w\w:\w\w:\w\w", ifconfig_result.decode('utf-8'))
 
     if mac_address_regex:
-        print('Mac address changed to: ' + mac_address_regex.group(0))
+        return mac_address_regex.group(0)
     else:
         print("[-] Could not read MAC address")
-    return mac_address_regex.group(0)
+   
+(args) = get_argy()
+currentmac = get_current_mac(args.interface)
 
-(options) = get_args() 
-currentmac = get_current_mac(options.interface)
 print("Current MAC address: " + str(currentmac))
-# change_mac(options.interface, options.new_mac)
+
+change_mac(args.interface, args.new_mac)
+checkmac = get_current_mac(args.interface)
+
+#Validation
+if checkmac == args.new_mac:
+    print("[+] MAC address was successfully changed to " + checkmac)
+elif checkmac != args.new_mac:
+    print("[-] MAC address change was unsuccessful")
