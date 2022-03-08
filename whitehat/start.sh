@@ -8,7 +8,7 @@
 docker exec -it kali bash
 #Ref https://www.kali.org/tools/
 #RUN apt update && apt -y install kali-linux-headless && apt install -y kali-tools-top10 && apt install -y bind9-dnsutils
-
+#RUN apt install lshw && apt install netdiscover
 #Optional
 #Make a new user and add to new docker group to enable the use of sudo
 # useradd newuser
@@ -23,3 +23,5 @@ docker exec -it kali bash
 
 #Start new container
 #docker run --privileged -tid -p 80 -v $PWD/:/home --name kali -d rebornweb/kaliupdated:cybersec
+#With wlan0 networking
+#docker run -i -t -d -e INTERFACE=wlan0 -e OUTGOINGS=wlan0 --net host -p 80 -v $PWD/:/home  --name kalinetwork --privileged rebornweb/kaliupdated:cybersec
