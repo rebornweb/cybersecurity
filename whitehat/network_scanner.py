@@ -36,3 +36,6 @@ def print_result(results_list):
 
 result = scan(args.ip)
 print_result(result)
+
+
+#You can use nmap for a ready build program
